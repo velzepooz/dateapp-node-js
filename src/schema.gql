@@ -1,0 +1,64 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+input CreateEventInput {
+  datetime: DateTime!
+  description: String!
+  name: String!
+  personId: ID!
+}
+
+input CreatePersonInput {
+  info: String!
+  name: String!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Event {
+  _id: ID!
+  createdAt: DateTime!
+  datetime: DateTime!
+  description: String!
+  name: String!
+  personId: ID!
+  updatedAt: DateTime!
+}
+
+type Mutation {
+  createEvent(createEventData: CreateEventInput!): Event!
+  createPerson(createPersonData: CreatePersonInput!): Person!
+  deleteEvent(id: String!): Boolean!
+  updateEvent(id: String!, updateEventData: UpdateEventInput!): Event!
+  updatePerson(id: String!, updatePersonData: UpdatePersonInput!): Person!
+}
+
+type Person {
+  _id: ID!
+  createdAt: DateTime!
+  info: String!
+  name: String!
+  updatedAt: DateTime!
+}
+
+type Query {
+  getAllEvents: [Event!]!
+  getEventById(id: String!): Event!
+  getPerson(id: String!): Person!
+}
+
+input UpdateEventInput {
+  datetime: DateTime
+  description: String
+  name: String
+  personId: ID
+}
+
+input UpdatePersonInput {
+  info: String
+  name: String
+}
