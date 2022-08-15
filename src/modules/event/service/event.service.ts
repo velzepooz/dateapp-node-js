@@ -1,21 +1,32 @@
 import { Model } from 'mongoose';
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { EventDocument, EventModel } from '../models/event.model';
 import { EventInterface } from '../interfaces/event.interface';
 import { createEventType } from '../types/create-event.type';
 import { updateEventType } from '../types/update-event.type';
 import { ObjectId } from '../../../shared/interfaces/base-model.interface';
+import { PUB_SUB } from '../../graphql-pub-sub/graphql-pub-sub.module';
+import { RedisPubSub } from 'graphql-redis-subscriptions';
+import { EventSubscriptionEnum } from '../enum/event-subscription.enum';
 
 @Injectable()
 export class EventService {
   constructor(
     @InjectModel(EventModel.name)
     private readonly _eventModel: Model<EventDocument>,
+    @Inject(PUB_SUB) private _pubSubService: RedisPubSub,
   ) {}
 
   async create(eventData: createEventType): Promise<EventInterface> {
-    return this._eventModel.create(eventData);
+    const event = await this._eventModel.create(eventData);
+
+    await this._pubSubService.publish(
+      EventSubscriptionEnum.EVENT_CREATED,
+      event,
+    );
+
+    return event;
   }
 
   async update(

@@ -1,10 +1,13 @@
 import morgan from 'morgan';
 import dotenv from 'dotenv';
 import { join } from 'path';
+import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
+import { RedisModuleOptions } from '@liaoliaots/nestjs-redis';
+import { PubSubRedisOptions } from 'graphql-redis-subscriptions/dist/redis-pubsub';
 import { HttpException, HttpStatus, INestApplication } from '@nestjs/common';
 import { ValidationPipeOptions } from '@nestjs/common/pipes/validation.pipe';
 import { ConfigServiceInterface } from '../interfaces/config-service.interface';
-import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
+import { graphQlRedisPubSubConfig, redisConfig } from './redis.config';
 
 dotenv.config({ path: `.${process.env.NODE_ENV || 'development'}.env` });
 
@@ -61,6 +64,29 @@ class ConfigService implements ConfigServiceInterface {
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       sortSchema: true,
       playground: this.getValue('GRAPHQL_PLAYGROUND') === 'true',
+      subscriptions: {
+        'subscriptions-transport-ws': true,
+      },
+    };
+  }
+
+  getRedisConfig(): RedisModuleOptions {
+    return {
+      config: redisConfig[process.env.NODE_ENV],
+    };
+  }
+
+  getGraphQlPubSubOptions(): PubSubRedisOptions {
+    return {
+      connection: `redis://${
+        graphQlRedisPubSubConfig[process.env.NODE_ENV].host
+      }:${
+        graphQlRedisPubSubConfig[process.env.NODE_ENV].port
+      }?defaultDatabase=${
+        graphQlRedisPubSubConfig[process.env.NODE_ENV].db
+      }&connectionName=${
+        graphQlRedisPubSubConfig[process.env.NODE_ENV].namespace
+      }` as any,
     };
   }
 

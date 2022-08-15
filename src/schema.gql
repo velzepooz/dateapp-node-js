@@ -53,6 +53,10 @@ type Query {
   getPerson(id: String!): Person!
 }
 
+type Subscription {
+  eventCreated(personId: String): Event!
+}
+
 input UpdateEventInput {
   datetime: DateTime
   description: String
