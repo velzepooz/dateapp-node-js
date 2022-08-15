@@ -38,7 +38,7 @@ export class PersonService {
     );
   }
 
-  async getOne(personId: string): Promise<PersonInterface> {
+  async getById(personId: string): Promise<PersonInterface> {
     const person = await this._personModel.findOne({ _id: personId });
 
     if (!person) {

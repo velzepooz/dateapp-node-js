@@ -25,6 +25,7 @@ type Event {
   datetime: DateTime!
   description: String!
   name: String!
+  person: Person!
   personId: ID!
   updatedAt: DateTime!
 }
@@ -40,6 +41,7 @@ type Mutation {
 type Person {
   _id: ID!
   createdAt: DateTime!
+  events: [Event!]!
   info: String!
   name: String!
   updatedAt: DateTime!

@@ -5,6 +5,7 @@ import { EventDocument, EventModel } from '../models/event.model';
 import { EventInterface } from '../interfaces/event.interface';
 import { createEventType } from '../types/create-event.type';
 import { updateEventType } from '../types/update-event.type';
+import { ObjectId } from '../../../shared/interfaces/base-model.interface';
 
 @Injectable()
 export class EventService {
@@ -55,5 +56,9 @@ export class EventService {
   async deleteEvent(eventId: string): Promise<boolean> {
     await this._eventModel.remove({ _id: eventId });
     return true;
+  }
+
+  async getEventsByParentId(personId: ObjectId): Promise<EventInterface[]> {
+    return this._eventModel.find({ personId });
   }
 }
