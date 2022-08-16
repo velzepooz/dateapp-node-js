@@ -45,6 +45,6 @@ export class PersonService {
       throw new HttpException('No such person', HttpStatus.NOT_FOUND);
     }
 
-    return this._personModel.findOne({ _id: personId });
+    return person;
   }
 }
